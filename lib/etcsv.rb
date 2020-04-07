@@ -7,7 +7,6 @@ module Etcsv
   require 'byebug'
 
   class EtsyProducts
-    attr_accessor :user, :brand, :shop
 
     def initialize (username)
       @username = username
@@ -19,15 +18,23 @@ module Etcsv
       Etsy.api_secret = api_secret
     end
 
-    def export_catalog
-      @user = Etsy.user(@username)
-      puts @user.inspect
-      @shop = @user.shop
-      @listings = Etsy::Listing.find_all_by_shop_id(@shop.id, :limit => 1000)
-      @brand = @shop.name
+    def user
+      return @user ||= Etsy.user(@username)
+    end
+
+    def shop
+      return @shop ||= self.user.shop
+    end
+
+    def brand
+      return @brand ||= self.shop.name
+    end
+
+    def export_catalog(csv_path)
+      listings = Etsy::Listing.find_all_by_shop_id(self.shop.id, :limit => 1000)
 
       fb_catalog = [ ]
-      @listings.each do |listing| #removing extra fields
+      listings.each do |listing| #removing extra fields
         fb_catalog << listing.result.slice("listing_id", "title", "description", "price", "quantity", "url")
       end
 
@@ -37,7 +44,7 @@ module Etcsv
         # add prefix to the item["listing_id"]
       end
 
-      fb_fields = {"brand" => brand, "condition" => "new", "availability" => "in stock"} #fb fields
+      fb_fields = {"brand" => self.brand, "condition" => "new", "availability" => "in stock"} #fb fields
       fb_catalog.each { |item| item.merge!(fb_fields) } #adding fb fields
 
       fb_catalog.each do |item| #getting primary image and additional images links
@@ -54,9 +61,7 @@ module Etcsv
         item.merge!("image_link" => primary_image, "additional_image_link" => album.join(","))
       end
 
-      time=Time.now.strftime("%Y%m%d-%H%M%S%L")
-
-      CSV.open("#{brand}-#{time}.csv", 'w') do |csv|
+      CSV.open(csv_path, 'w') do |csv|
         csv << ['id', 'title', 'description', 'price', 'inventory', 'link', 'brand', 'condition', 'availability', 'image_link', 'additional_image_link']
         fb_catalog.each { |item| csv << item.values }
       end
