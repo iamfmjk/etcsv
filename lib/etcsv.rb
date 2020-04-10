@@ -4,7 +4,6 @@ module Etcsv
   class Error < StandardError; end
 
   require 'csv'
-  require 'byebug'
 
   class EtsyProducts
 
