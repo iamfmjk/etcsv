@@ -18,6 +18,7 @@ RSpec.describe Etcsv do
     # end
     let(:username) { 'iuliiakolomiiets' }
     let(:etsy_products) { Etcsv::EtsyProducts.new(username) }
+    let(:brand) {'brand'}
 
     it "retrieves the user details" do
       user_details = double("user_details")
@@ -32,7 +33,28 @@ RSpec.describe Etcsv do
 
       expect(Etsy).to receive(:user).with(username).and_return(user_details)
       expect(etsy_products.shop).to eq(shop_info)
+    end
 
+    it "sets a brand name from the shop data" do
+      shop_info = double("shop info", name: brand)
+      user_details = double("user_details", shop: shop_info )
+
+      expect(Etsy).to receive(:user).with(username).and_return(user_details)
+      expect(etsy_products.brand).to eq(brand)
+    end
+
+    it "retrieves active listings by shop id" do
+      shop_id = double("shop id")
+      shop_info = double("shop info", id: shop_id, name: brand)
+      user_details = double("user_details", shop: shop_info )
+      all_listings = []
+      csv_path = '../catalog-sv/all_listings.csv'
+
+      expect(Etsy).to receive(:user).with(username).and_return(user_details)
+      expect(etsy_products.shop.id).to eq(shop_id)
+      expect(Etsy::Listing).to receive(:find_all_by_shop_id).with(shop_id, limit: 1000).and_return(all_listings)
+
+      etsy_products.export_catalog(csv_path)
     end
 
   end
