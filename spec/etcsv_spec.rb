@@ -28,21 +28,22 @@ RSpec.describe Etcsv do
     end
 
     it "retrieves shop info" do
-      shop_info = double("shop info")
+      shop_id = double("shop id")
+      shop_info = double("shop info", id: shop_id)
       user_details = double("user_details", shop: shop_info )
 
       expect(Etsy).to receive(:user).with(username).and_return(user_details)
       expect(etsy_products.shop).to eq(shop_info)
+      expect(etsy_products.shop.id).to eq(shop_id)
+
     end
 
     it "sets a brand name from the shop data" do
-      shop_id = double("shop id")
-      shop_info = double("shop info", name: brand, id: shop_id)
+      shop_info = double("shop info", name: brand)
       user_details = double("user_details", shop: shop_info )
 
       expect(Etsy).to receive(:user).with(username).and_return(user_details)
       expect(etsy_products.brand).to eq(brand)
-      expect(etsy_products.shop.id).to eq(shop_id)
 
     end
 
