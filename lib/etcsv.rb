@@ -39,8 +39,6 @@ module Etcsv
 
       fb_catalog.each do |item| # remove utm tags from listing url
         item["url"] = item["url"].split("?")[0]
-        item["listing_id"] = item["listing_id"].to_s.prepend("etcsv-")
-        # add prefix to the item["listing_id"]
       end
 
       fb_fields = {"brand" => self.brand, "condition" => "new", "availability" => "in stock"} #fb fields
@@ -58,6 +56,8 @@ module Etcsv
           end
         end
         item.merge!("image_link" => primary_image, "additional_image_link" => album.join(","))
+        item["listing_id"] = item["listing_id"].to_s.prepend("etcsv-")
+        # add prefix to the item["listing_id"]
       end
 
       CSV.open(csv_path, 'w') do |csv|
