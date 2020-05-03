@@ -28,6 +28,14 @@ RSpec.describe Etcsv do
 
     let(:listing_pictures) {
       {
+        796021753 => [
+          double(
+            "picture03", result: {"listing_image_id"=>2312573397, "creation_tsz"=>1586974376, "listing_id"=>796021753, "rank"=>1, "url_75x75"=>"https://i.etsystatic.com/18213281/d/il/0a9bb5/2312573397/il_75x75.2312573397_qmo6.jpg?version=0", "url_170x135"=>"https://i.etsystatic.com/18213281/d/il/0a9bb5/2312573397/il_170x135.2312573397_qmo6.jpg?version=0", "url_570xN"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_570xN.2312573397_qmo6.jpg", "url_fullxfull"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_fullxfull.2312573397_qmo6.jpg"}
+          ),
+          double(
+            "picture04", result: {"listing_image_id"=>2264973070, "creation_tsz"=>1586974376, "listing_id"=>796021753, "rank"=>2, "url_75x75"=>"https://i.etsystatic.com/18213281/d/il/a604f5/2264973070/il_75x75.2264973070_8e28.jpg?version=0", "url_170x135"=>"https://i.etsystatic.com/18213281/d/il/a604f5/2264973070/il_170x135.2264973070_8e28.jpg?version=0", "url_570xN"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_570xN.2264973070_8e28.jpg", "url_fullxfull"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_fullxfull.2264973070_8e28.jpg"}
+          )
+        ],
         796020929 => [
           double(
             "picture01",
@@ -36,17 +44,37 @@ RSpec.describe Etcsv do
           double(
             "picture02", result: {"listing_image_id"=>2312571393, "creation_tsz"=>1586974245, "listing_id"=>796020929, "rank"=>4, "url_75x75"=>"https://i.etsystatic.com/18213281/d/il/546cef/2312571393/il_75x75.2312571393_swhs.jpg?version=0", "url_170x135"=>"https://i.etsystatic.com/18213281/d/il/546cef/2312571393/il_170x135.2312571393_swhs.jpg?version=0", "url_570xN"=>"https://i.etsystatic.com/18213281/r/il/546cef/2312571393/il_570xN.2312571393_swhs.jpg", "url_fullxfull"=>"https://i.etsystatic.com/18213281/r/il/546cef/2312571393/il_fullxfull.2312571393_swhs.jpg"}
           )
-        ],
-
-        796021753 => [
-          double(
-            "picture03", result: {"listing_image_id"=>2312573397, "creation_tsz"=>1586974376, "listing_id"=>796021753, "rank"=>1, "url_75x75"=>"https://i.etsystatic.com/18213281/d/il/0a9bb5/2312573397/il_75x75.2312573397_qmo6.jpg?version=0", "url_170x135"=>"https://i.etsystatic.com/18213281/d/il/0a9bb5/2312573397/il_170x135.2312573397_qmo6.jpg?version=0", "url_570xN"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_570xN.2312573397_qmo6.jpg", "url_fullxfull"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_fullxfull.2312573397_qmo6.jpg"}
-          ),
-          double(
-            "picture04", result: {"listing_image_id"=>2264973070, "creation_tsz"=>1586974376, "listing_id"=>796021753, "rank"=>2, "url_75x75"=>"https://i.etsystatic.com/18213281/d/il/a604f5/2264973070/il_75x75.2264973070_8e28.jpg?version=0", "url_170x135"=>"https://i.etsystatic.com/18213281/d/il/a604f5/2264973070/il_170x135.2264973070_8e28.jpg?version=0", "url_570xN"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_570xN.2264973070_8e28.jpg", "url_fullxfull"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_fullxfull.2264973070_8e28.jpg"}
-          )
         ]
       }
+    }
+
+    let(:exported_listings) {
+      [
+        {
+          "listing_id"=>"etcsv-796021753",
+          "title"=>"Title One",
+          "description"=>"Description One",
+          "price"=>"20.25",
+          "quantity"=>"1",
+          "url"=>"https://www.etsy.com/listing/796021753/coiled-rope-coasters-set-of-4-washable",
+          "brand"=>"shiborifm",
+          "condition"=>"new",
+          "availability"=>"in stock",
+          "image_link"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_fullxfull.2312573397_qmo6.jpg", "additional_image_link"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_fullxfull.2264973070_8e28.jpg"
+        },
+        {
+          "listing_id"=>"etcsv-796020929",
+          "title"=>"Title Two",
+          "description"=>"Description two",
+          "price"=>"20.25", "quantity"=>1,
+          "url"=>"https://www.etsy.com/listing/796020929/coiled-rope-coasters-set-of-4-washable",
+          "brand"=>"shiborifm",
+          "condition"=>"new",
+          "availability"=>"in stock",
+          "image_link"=>"https://i.etsystatic.com/18213281/r/il/99c9a8/2264970190/il_fullxfull.2264970190_kmpl.jpg",
+          "additional_image_link"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_fullxfull.2264973070_8e28.jpg"
+        }
+      ]
     }
 
     it "retrieves the user details" do
@@ -92,11 +120,17 @@ RSpec.describe Etcsv do
           .and_return(listing_pictures[listing.result["listing_id"]])
       end
 
+
       etsy_products.export_catalog(csv_path)
 
       expect(File.exist?(csv_path)).to be_truthy
-      puts File.read(csv_path)
-
+      all_rows = CSV.read(csv_path, headers: true)
+      all_rows.each.with_index do |row, i|
+        puts "id field is #{row["id"]} - listing id is #{exported_listings[i]["listing_id"]}"
+        expect(row["id"]).to eq(exported_listings[i]["listing_id"])
+      end
+      # puts File.read(csv_path)
+      # puts exported_listings
     end
   end
 end
