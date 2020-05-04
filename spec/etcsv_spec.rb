@@ -67,23 +67,24 @@ RSpec.describe Etcsv do
     let(:exported_listings) {
       [
         {
-          "listing_id"=>"etcsv-796021753",
+          "id"=>"etcsv-796021753",
           "title"=>"Title One",
           "description"=>"Description One",
           "price"=>"20.25",
-          "quantity"=>"1",
-          "url"=>"https://www.etsy.com/listing/796021753/coiled-rope-coasters-set-of-4-washable",
+          "inventory"=>"1",
+          "link"=>"https://www.etsy.com/listing/796021753/coiled-rope-coasters-set-of-4-washable",
           "brand"=>"shiborifm",
           "condition"=>"new",
           "availability"=>"in stock",
           "image_link"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_fullxfull.2312573397_qmo6.jpg", "additional_image_link"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_fullxfull.2264973070_8e28.jpg"
         },
         {
-          "listing_id"=>"etcsv-796020929",
+          "id"=>"etcsv-796020929",
           "title"=>"Title Two",
           "description"=>"Description two",
-          "price"=>"20.25", "quantity"=>"1",
-          "url"=>"https://www.etsy.com/listing/796020929/coiled-rope-coasters-set-of-4-washable",
+          "price"=>"20.25",
+          "inventory"=>"1",
+          "link"=>"https://www.etsy.com/listing/796020929/coiled-rope-coasters-set-of-4-washable",
           "brand"=>"shiborifm",
           "condition"=>"new",
           "availability"=>"in stock",
@@ -118,7 +119,7 @@ RSpec.describe Etcsv do
       expect(etsy_products.brand).to eq(brand)
     end
 
-    it "retrieves active listings by shop id" do
+    it "retrieves active listings by shop id and exports them to CSV file" do
       shop_id = double("shop id")
       shop_info = double("shop info", id: shop_id, name: brand)
       user_details = double("user_details", shop: shop_info )
@@ -141,17 +142,7 @@ RSpec.describe Etcsv do
       all_rows = CSV.read(csv_path, headers: true)
 
       all_rows.each.with_index do |row, i|
-        expect(row["id"]).to eq(exported_listings[i]["listing_id"])
-        expect(row["title"]).to eq(exported_listings[i]["title"])
-        expect(row["description"]).to eq(exported_listings[i]["description"])
-        expect(row["price"]).to eq(exported_listings[i]["price"])
-        expect(row["inventory"]).to eq(exported_listings[i]["quantity"])
-        expect(row["link"]).to eq(exported_listings[i]["url"])
-        expect(row["brand"]).to eq(exported_listings[i]["brand"])
-        expect(row["condition"]).to eq(exported_listings[i]["condition"])
-        expect(row["availability"]).to eq(exported_listings[i]["availability"])
-        expect(row["image_link"]).to eq(exported_listings[i]["image_link"])
-        expect(row["additional_image_link"]).to eq(exported_listings[i]["additional_image_link"])
+        expect(row.to_h).to eq(exported_listings[i])
       end
     end
   end
