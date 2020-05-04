@@ -30,10 +30,28 @@ RSpec.describe Etcsv do
       {
         796021753 => [
           double(
-            "picture03", result: {"listing_image_id"=>2312573397, "creation_tsz"=>1586974376, "listing_id"=>796021753, "rank"=>1, "url_75x75"=>"https://i.etsystatic.com/18213281/d/il/0a9bb5/2312573397/il_75x75.2312573397_qmo6.jpg?version=0", "url_170x135"=>"https://i.etsystatic.com/18213281/d/il/0a9bb5/2312573397/il_170x135.2312573397_qmo6.jpg?version=0", "url_570xN"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_570xN.2312573397_qmo6.jpg", "url_fullxfull"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_fullxfull.2312573397_qmo6.jpg"}
+            "picture03", result: {
+              "listing_image_id"=>2312573397,
+              "creation_tsz"=>1586974376,
+              "listing_id"=>796021753,
+              "rank"=>1,
+              "url_75x75"=>"https://i.etsystatic.com/18213281/d/il/0a9bb5/2312573397/il_75x75.2312573397_qmo6.jpg?version=0",
+              "url_170x135"=>"https://i.etsystatic.com/18213281/d/il/0a9bb5/2312573397/il_170x135.2312573397_qmo6.jpg?version=0",
+              "url_570xN"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_570xN.2312573397_qmo6.jpg",
+              "url_fullxfull"=>"https://i.etsystatic.com/18213281/r/il/0a9bb5/2312573397/il_fullxfull.2312573397_qmo6.jpg"
+            }
           ),
           double(
-            "picture04", result: {"listing_image_id"=>2264973070, "creation_tsz"=>1586974376, "listing_id"=>796021753, "rank"=>2, "url_75x75"=>"https://i.etsystatic.com/18213281/d/il/a604f5/2264973070/il_75x75.2264973070_8e28.jpg?version=0", "url_170x135"=>"https://i.etsystatic.com/18213281/d/il/a604f5/2264973070/il_170x135.2264973070_8e28.jpg?version=0", "url_570xN"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_570xN.2264973070_8e28.jpg", "url_fullxfull"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_fullxfull.2264973070_8e28.jpg"}
+            "picture04", result: {
+              "listing_image_id"=>2264973070,
+              "creation_tsz"=>1586974376,
+              "listing_id"=>796021753,
+              "rank"=>2,
+              "url_75x75"=>"https://i.etsystatic.com/18213281/d/il/a604f5/2264973070/il_75x75.2264973070_8e28.jpg?version=0",
+              "url_170x135"=>"https://i.etsystatic.com/18213281/d/il/a604f5/2264973070/il_170x135.2264973070_8e28.jpg?version=0",
+              "url_570xN"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_570xN.2264973070_8e28.jpg",
+              "url_fullxfull"=>"https://i.etsystatic.com/18213281/r/il/a604f5/2264973070/il_fullxfull.2264973070_8e28.jpg"
+            }
           )
         ],
         796020929 => [
@@ -125,7 +143,6 @@ RSpec.describe Etcsv do
       all_rows = CSV.read(csv_path, headers: true)
 
       all_rows.each.with_index do |row, i|
-        puts "id field is #{row["id"]} - listing id is #{exported_listings[i]["listing_id"]}"
         expect(row["id"]).to eq(exported_listings[i]["listing_id"])
         expect(row["title"]).to eq(exported_listings[i]["title"])
         expect(row["description"]).to eq(exported_listings[i]["description"])

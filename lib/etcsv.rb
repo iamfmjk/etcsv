@@ -1,9 +1,9 @@
 require "etcsv/version"
+require 'csv'
 
 module Etcsv
   class Error < StandardError; end
 
-  require 'csv'
 
   class EtsyProducts
 
@@ -31,42 +31,34 @@ module Etcsv
 
     def export_catalog(csv_path)
       listings = Etsy::Listing.find_all_by_shop_id(self.shop.id, :limit => 1000)
-
-      fb_catalog = [ ]
-      listings.each do |listing| #removing extra fields
-        fb_catalog << listing.result.slice("listing_id", "title", "description", "price", "quantity", "url")
-      end
-
-      fb_catalog.each do |item| # remove utm tags from listing url
-        item["url"] = item["url"].split("?")[0]
-      end
-
-      fb_fields = {"brand" => self.brand, "condition" => "new", "availability" => "in stock"} #fb fields
-      fb_catalog.each { |item| item.merge!(fb_fields) } #adding fb fields
-
-      fb_catalog.each do |item| #getting primary image and additional images links
-        images = Etsy::Image.find_all_by_listing_id(item["listing_id"])
-        primary_image = ""
-        album = []
-        images.each do |img|
-          if img.result["rank"] == 1
-            primary_image = img.result["url_fullxfull"]
-          else
-            album << img.result["url_fullxfull"]
-          end
-        end
-        item.merge!("image_link" => primary_image, "additional_image_link" => album.join(","))
-        item["listing_id"] = item["listing_id"].to_s.prepend("etcsv-")
-        # add prefix to the item["listing_id"]
-      end
-
+      fb_fields = {"brand" => self.brand, "condition" => "new", "availability" => "in stock"}
+      header = ['id', 'title', 'description', 'price', 'inventory', 'link', 'brand', 'condition', 'availability', 'image_link', 'additional_image_link']
       CSV.open(csv_path, 'w') do |csv|
-        csv << ['id', 'title', 'description', 'price', 'inventory', 'link', 'brand', 'condition', 'availability', 'image_link', 'additional_image_link']
-        fb_catalog.each { |item| csv << item.values }
+        csv << header
+
+        listings.each do |listing|
+          listing_result = listing.result
+          catalog_item = listing_result.slice("title", "description", "price")
+          catalog_item.merge!(fb_fields)
+          catalog_item["id"] = listing_result["listing_id"].to_s.prepend("etcsv-")
+          catalog_item["inventory"] = listing_result["quantity"]
+          catalog_item["link"] = listing_result["url"].split("?")[0]
+
+          images = Etsy::Image.find_all_by_listing_id(listing_result["listing_id"])
+          primary_image = ""
+          album = []
+          images.each do |img|
+            if img.result["rank"] == 1
+              primary_image = img.result["url_fullxfull"]
+            else
+              album << img.result["url_fullxfull"]
+            end
+          end
+          catalog_item.merge!("image_link" => primary_image, "additional_image_link" => album.join(","))
+
+          csv << catalog_item.slice(*header).values
+        end
       end
-
     end
-
   end
-
 end
