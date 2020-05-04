@@ -1,6 +1,4 @@
-require 'etsy'
-require 'etcsv'
-require 'csv'
+require 'spec_helper'
 require 'tmpdir'
 
 RSpec.describe Etcsv do
