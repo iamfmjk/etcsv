@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "etcsv"
+
+etsy_api_key = ENV["ETSY_API_KEY"]
+etsy_api_secret = ENV["ETSY_API_SECRET"]
+
+Etcsv::EtsyProducts.set_etsy_credentials(etsy_api_key, etsy_api_secret)
+
+if ARGV.length < 2
+  puts "Usage: #{__FILE__} <username> <csv_path>"
+  exit 1
+end
+
+username = ARGV[0]
+csv_path = ARGV[1]
+
+etsy_products = Etcsv::EtsyProducts.new(username)
+etsy_products.export_catalog(csv_path)
