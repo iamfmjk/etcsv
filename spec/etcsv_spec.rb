@@ -138,6 +138,7 @@ RSpec.describe Etcsv do
       user_details = double("user_details", shop: shop_info )
 
       expect(Etsy).to receive(:user).with(username).and_return(user_details)
+      expect(etsy_products).to receive(:listings).and_return(all_listings)
 
       all_listings.each do |listing|
         expect(Etsy::Image).to receive(:find_all_by_listing_id)
