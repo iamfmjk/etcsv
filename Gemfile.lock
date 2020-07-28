@@ -3,6 +3,7 @@ PATH
   specs:
     etcsv (0.1.0)
       etsy
+      json
 
 GEM
   remote: https://rubygems.org/
