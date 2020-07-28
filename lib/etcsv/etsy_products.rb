@@ -24,14 +24,17 @@ module Etcsv
       return @brand ||= self.shop.name
     end
 
+    def listings
+      return @listings ||= Etsy::Listing.find_all_by_shop_id(self.shop.id, :limit => 1000)
+    end
+
     def export_catalog(csv_path)
-      listings = Etsy::Listing.find_all_by_shop_id(self.shop.id, :limit => 1000)
       fb_fields = {"brand" => self.brand, "condition" => "new", "availability" => "in stock"}
       header = ['id', 'title', 'description', 'price', 'inventory', 'link', 'brand', 'condition', 'availability', 'image_link', 'additional_image_link']
       CSV.open(csv_path, 'w') do |csv|
         csv << header
 
-        listings.each do |listing|
+        self.listings.each do |listing|
           listing_result = listing.result
           catalog_item = listing_result.slice("title", "description", "price")
           catalog_item.merge!(fb_fields)

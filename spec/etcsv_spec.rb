@@ -119,15 +119,25 @@ RSpec.describe Etcsv do
       expect(etsy_products.brand).to eq(brand)
     end
 
+    it "retrieves active listings" do
+      shop_id = double("shop id")
+      shop_info = double("shop info", id: shop_id)
+      user_details = double("user_details", shop: shop_info )
+
+      expect(Etsy).to receive(:user).with(username).and_return(user_details)
+
+      expect(Etsy::Listing).to receive(:find_all_by_shop_id)
+        .with(shop_id, limit: 1000)
+        .and_return(all_listings)
+      expect(etsy_products.listings).to eq(all_listings)
+    end
+
     it "retrieves active listings by shop id and exports them to CSV file" do
       shop_id = double("shop id")
       shop_info = double("shop info", id: shop_id, name: brand)
       user_details = double("user_details", shop: shop_info )
 
       expect(Etsy).to receive(:user).with(username).and_return(user_details)
-      expect(Etsy::Listing).to receive(:find_all_by_shop_id)
-        .with(shop_id, limit: 1000)
-        .and_return(all_listings)
 
       all_listings.each do |listing|
         expect(Etsy::Image).to receive(:find_all_by_listing_id)
