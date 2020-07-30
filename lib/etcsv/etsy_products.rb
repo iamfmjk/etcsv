@@ -24,6 +24,10 @@ module Etcsv
       return @brand ||= self.shop.name
     end
 
+    def shop_image
+      return @shop_image ||= self.shop.image_url
+    end
+
     def listings
       return @listings ||= Etsy::Listing.find_all_by_shop_id(self.shop.id, :limit => 1000)
     end

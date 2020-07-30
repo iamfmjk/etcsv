@@ -16,6 +16,7 @@ RSpec.describe Etcsv do
     let(:username) { 'iuliiakolomiiets' }
     let(:etsy_products) { Etcsv::EtsyProducts.new(username) }
     let(:brand) {'shiborifm'}
+    let(:shop_image) {'https://i.etsystatic.com/isla/580943/33844307/isla_280x280.33844307_s0r8c8m4.jpg'}
     let(:csv_path) { File.join Dir.tmpdir, tmpname }
     let(:all_listings) {
       [
@@ -130,6 +131,15 @@ RSpec.describe Etcsv do
         .with(shop_id, limit: 1000)
         .and_return(all_listings)
       expect(etsy_products.listings).to eq(all_listings)
+    end
+
+    it "retrieves shop image url" do
+      shop_info = double("shop_info", image_url: shop_image)
+      user_details = double("user details", shop: shop_info)
+
+      expect(Etsy).to receive(:user).with(username).and_return(user_details)
+      expect(etsy_products.shop_image).to eq(shop_image)
+
     end
 
     it "retrieves active listings by shop id and exports them to CSV file" do
