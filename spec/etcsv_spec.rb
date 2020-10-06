@@ -6,6 +6,34 @@ RSpec.describe Etcsv do
     expect(Etcsv::VERSION).not_to be nil
   end
 
+describe "Etcsv::EtsyProducts.retry_with_backoff" do
+  it "doesn't retry on success" do
+    expect(Etcsv::EtsyProducts.retry_with_backoff do
+      1
+    end).to eq(1)
+  end
+
+  it "retries 2 times with success" do
+    test_retries_counter = 0
+    result = Etcsv::EtsyProducts.retry_with_backoff do
+      test_retries_counter += 1
+      if test_retries_counter <= 2
+        raise Etsy::ExceededRateLimit
+      elsif test_retries_counter == 3
+         1
+      end
+    end
+    expect(result).to eq(1)
+  end
+
+  it "fails and raises exception after 6 tries" do
+    expect { Etcsv::EtsyProducts.retry_with_backoff do
+      raise Etsy::ExceededRateLimit
+    end }.to raise_error(Etcsv::RequestsLimitError)
+  end
+
+end
+
   describe Etcsv::EtsyProducts do
 
     def tmpname
@@ -166,5 +194,6 @@ RSpec.describe Etcsv do
         expect(row.to_h).to eq(exported_listings[i])
       end
     end
+
   end
 end

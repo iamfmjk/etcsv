@@ -1,6 +1,12 @@
 module Etcsv
 
+  class RequestsLimitError < StandardError; end
+
   class EtsyProducts
+
+    MAX_REQUESTS_PER_SECOND = 20
+    MIN_SLEEP_TIME = 1.0 / MAX_REQUESTS_PER_SECOND
+    MAX_RETRIES = 5
 
     def initialize (username)
       @username = username
@@ -10,6 +16,17 @@ module Etcsv
       Etsy.protocol = 'https'
       Etsy.api_key = api_key
       Etsy.api_secret = api_secret
+    end
+
+    def self.retry_with_backoff(tries_counter = 1, &block)
+      return yield
+    rescue Etsy::ExceededRateLimit
+      if tries_counter <= MAX_RETRIES
+        sleep MIN_SLEEP_TIME ** 1 / tries_counter
+        retry_with_backoff(tries_counter + 1, &block)
+      else
+        raise RequestsLimitError
+      end
     end
 
     def user
@@ -29,7 +46,9 @@ module Etcsv
     end
 
     def listings
-      return @listings ||= Etsy::Listing.find_all_by_shop_id(self.shop.id, :limit => 1000)
+      return @listings ||= self.class.retry_with_backoff do
+        Etsy::Listing.find_all_by_shop_id(self.shop.id, :limit => 1000)
+      end
     end
 
     def export_catalog(csv_path)
@@ -46,7 +65,9 @@ module Etcsv
           catalog_item["inventory"] = listing_result["quantity"]
           catalog_item["link"] = listing_result["url"].split("?")[0]
 
-          images = Etsy::Image.find_all_by_listing_id(listing_result["listing_id"])
+          images = self.class.retry_with_backoff do
+            Etsy::Image.find_all_by_listing_id(listing_result["listing_id"])
+          end
           primary_image = ""
           album = []
           images.each do |img|
@@ -62,5 +83,6 @@ module Etcsv
         end
       end
     end
+
   end
 end
