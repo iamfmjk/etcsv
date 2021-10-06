@@ -63,8 +63,8 @@ module Etcsv
           catalog_item.merge!(fb_fields)
           catalog_item["id"] = listing_result["listing_id"].to_s.prepend("etcsv-")
           catalog_item["inventory"] = listing_result["quantity"]
-          catalog_item["link"] = listing_result["url"].split("?")[0]
-
+          catalog_item["link"] = listing_result["url"].split("?")[0].sub(/www/, @brand)
+          
           images = self.class.retry_with_backoff do
             Etsy::Image.find_all_by_listing_id(listing_result["listing_id"])
           end
