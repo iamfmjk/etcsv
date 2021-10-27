@@ -1,8 +1,15 @@
+GIT
+  remote: git@github.com:iamfmjk/etsy.git
+  revision: 3d4b35cf3753bd97d0deb00848c51b3e50f31d0b
+  specs:
+    etsy (0.3.3)
+      json (>= 1.5.0)
+      oauth (>= 0.5.5)
+
 PATH
   remote: .
   specs:
     etcsv (0.1.0)
-      etsy
       json
 
 GEM
@@ -10,11 +17,8 @@ GEM
   specs:
     byebug (11.1.3)
     diff-lcs (1.4.4)
-    etsy (0.3.3)
-      json (>= 1.5.0)
-      oauth (~> 0.4.0)
     json (2.6.1)
-    oauth (0.4.7)
+    oauth (0.5.6)
     rake (12.3.3)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
@@ -36,6 +40,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   etcsv!
+  etsy!
   rake (~> 12.0)
   rspec (~> 3.0)
 
