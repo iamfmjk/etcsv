@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:iamfmjk/etsy.git
-  revision: 3d4b35cf3753bd97d0deb00848c51b3e50f31d0b
+  revision: e7c29cd42f3c0ddc190b7961d83d554576f9ef9a
   specs:
     etsy (0.3.3)
       json (>= 1.5.0)
